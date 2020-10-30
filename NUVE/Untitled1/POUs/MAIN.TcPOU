@@ -231,7 +231,7 @@ Axis2_MoveVelocity(
 		
 		//In case of an error with torque controlled servo:
 	IF(Power2_error = TRUE OR MV2_Error=TRUE) THEN
-		StepV := 10;
+		//StepV := 10;
 	END_IF
 		
 		CASE StepV OF
