@@ -46,130 +46,14 @@ VAR
 	Stop1Btn: BOOL;
 	Setep: INT;
 	TorqueEnable: BOOL;
-	Axis2_Power: MC_Power;
-	Axis2: AXIS_REF;
-	Power2_EnablePos: BOOL;
-	Power2_EnableNeg: BOOL;
-	Power2_Enable: BOOL;
-	Power2_Override: LREAL;
-	Power2_BufferMode: MC_BufferMode;
-	Power2_Status: BOOL;
-	Power2_Busy: BOOL;
-	Power2_Active: BOOL;
-	Power2_Error: BOOL;
-	Power2_ErrorID: UDINT;
-	Axis2_ErrorReset: MC_Reset;
-	ErrorReset2_Execute: BOOL;
-	res2Done: BOOL;
-	res2Busy: BOOL;
-	res2Error: BOOL;
-	res2ErrorID: UDINT;
-	Axis2_MoveVelocity: MC_MoveVelocity;
-	MV2_Execute: BOOL;
-	MV2_Velocity: LREAL;
-	MV2_Accelleration: LREAL;
-	MV2_Decceleration: LREAL;
-	MV2_Jerk: LREAL;
-	MV2_Direction: MC_Direction;
-	MV2_Buffermode: MC_BufferMode;
-	MV2_InVelocity: BOOL;
-	MV2_Busy: BOOL;
-	MV2_Active: BOOL;
-	MV2_CommandAborted: BOOL;
-	MV2_Error: BOOL;
-	MV2_ErrorID: UDINT;
-	StepV: INT;
-	PowerOnVelocityBtn: BOOL;
-	Start2Btn: BOOL;
-	Stop2Btn: BOOL;
-	MVelocity: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[//Axis1 - Torque controlled servomotor
-//Axis2 - Velocity controlled servomotor
-Axis1_Power(
-	Axis:=Axis1,
-	Enable := Power1_Enable,
-	Enable_Positive := Power1_EnablePos,
-	Enable_Negative := Power1_EnableNeg,
-	Override := Power1_Override,
-	BufferMode := Power1_BufferMode,
-	Status => Power1_Status,
-	Busy => Power1_Busy,
-	Active => Power1_Active,
-	Error => Power1_error,
-	ErrorID =>Power1_ErrorID);
-	
-Axis2_Power(
-	Axis:= Axis2, 
-	Enable:= Power2_Enable, 
-	Enable_Positive:= Power2_EnablePos, 
-	Enable_Negative:= Power2_EnableNeg, 
-	Override:= Power2_Override, 
-	BufferMode:= Power2_BufferMode, 
-	//Options:= , 
-	Status=> Power2_Status, 
-	Busy=> Power2_Busy, 
-	Active=> Power2_Active, 
-	Error=> Power2_Error, 
-	ErrorID=> Power2_ErrorID);
-	
-Axis1_Error_Reset(
-	Axis := Axis1,
-	Execute := ErrorReset1_Execute,
-	Done => res1Done,
-	Busy => res1Busy,
-	Error => res1Error,
-	ErrorID => res1ErrorID);
-	
-Axis2_ErrorReset(
-	Axis := Axis2,
-	Execute := ErrorReset2_Execute,
-	Done => res2Done,
-	Busy => res2Busy,
-	Error => res2Error,
-	ErrorID => res2ErrorID);
-	
-Axis1_MV(
-	Axis:= Axis1, 
-	Execute:= MV1_Execute, 
-	Velocity:= MV1_Velocity, 
-	Acceleration:= MV1_Accelleration, 
-	Deceleration:= MV1_Decceleration, 
-	Jerk:= MV1_Jerk, 
-	Direction:= MV1_Direction, 
-	BufferMode:= MV1_Buffermode, 
-	//Options:= MV_Options, 
-	InVelocity=> MV1_InVelocity, 
-	Busy=> MV1_Busy, 
-	Active=> MV1_Active, 
-	CommandAborted=> MV1_CommandAborted, 
-	Error=> MV1_Error, 
-	ErrorID=> MV1_ErrorID);
-	
-Axis2_MoveVelocity(
-	Axis:= Axis2, 
-	Execute:= MV2_Execute, 
-	Velocity:= MV2_Velocity, 
-	Acceleration:= MV2_Accelleration, 
-	Deceleration:= MV2_Decceleration, 
-	Jerk:= MV2_Jerk, 
-	Direction:= MV2_Direction, 
-	BufferMode:= MV2_Buffermode, 
-	//Options:= MV_Options, 
-	InVelocity=> MV2_InVelocity, 
-	Busy=> MV2_Busy, 
-	Active=> MV2_Active, 
-	CommandAborted=> MV2_CommandAborted, 
-	Error=> MV2_Error, 
-	ErrorID=> MV2_ErrorID);
-	
-	//Torque Controlled Servo
+      <ST><![CDATA[//Torque Controlled Servo
 	
 	//In case of an error with torque controlled servo:
 	IF(Power1_error = TRUE OR MV1_Error=TRUE)THEN
-		Step := 10;
+		//Step := 10;
 	END_IF
 	
 	//Enables user to set the torque of the servomotor
@@ -226,128 +110,57 @@ Axis2_MoveVelocity(
 			END_IF
 			
 		END_CASE
-		
-		//Velocity Controlled Servo
-		
-		//In case of an error with torque controlled servo:
-	IF(Power2_error = TRUE OR MV2_Error=TRUE) THEN
-		//StepV := 10;
-	END_IF
-		
-		CASE StepV OF
-		0://Start of the power (in next step), when the PowerOnVelocity button will be clicked
-			IF (PowerOnVelocityBtn = TRUE) THEN
-				StepV := 1;
-			END_IF
-		1://Start the torque control, when the StartTorque button will be clicked
-			Power2_Enable := TRUE;
-			Power2_EnablePos := TRUE;
-			Power2_EnableNeg := TRUE;
-			Power2_Override := 100;
-			PowerOnVelocityBtn := FALSE;
-			IF (Start2Btn = TRUE) THEN
-				StepV := 2;
-			END_IF
-		2://Stop the motor (in next step), when the StopVelocity button will be clicked
-			MV2_Execute := TRUE; 
-			
-			IF NOT(MV2_Velocity = MVelocity) THEN
-				MV2_Velocity := MVelocity;
-				MV2_Execute := FALSE; 
-			END_IF
-			 
-			MV2_Accelleration := 100; 
-			MV2_Decceleration := 100;
-			MV2_Jerk := 100;
-			Start2Btn := FALSE;
-			IF Stop2Btn = TRUE THEN
-				StepV:= 3;
-			END_IF
-		3://Stops motor and gets back to the Power On state
-			IF MV2_Velocity = 0 THEN
-				MV1_Execute := TRUE;
-				StepV := 1;
-			END_IF
-			MV2_Execute := FALSE;
-			MV2_Velocity := 0;
-			Stop2Btn := FALSE;
-						
-			
-		10://Error Step
-			Power2_Enable := FALSE;
-			MV2_Execute := FALSE; 
-			MV2_Velocity := 0;
-			ErrorReset2_Execute := TRUE;
-			IF res2Done = TRUE THEN
-				StepV := 0;
-			END_IF
-			
-		END_CASE
-		
+//Axis1 - Torque controlled servomotor
+Axis1_Power(
+	Axis:=Axis1,
+	Enable := Power1_Enable,
+	Enable_Positive := Power1_EnablePos,
+	Enable_Negative := Power1_EnableNeg,
+	Override := Power1_Override,
+	BufferMode := Power1_BufferMode,
+	Status => Power1_Status,
+	Busy => Power1_Busy,
+	Active => Power1_Active,
+	Error => Power1_error,
+	ErrorID =>Power1_ErrorID);
+	
+Axis1_Error_Reset(
+	Axis := Axis1,
+	Execute := ErrorReset1_Execute,
+	Done => res1Done,
+	Busy => res1Busy,
+	Error => res1Error,
+	ErrorID => res1ErrorID);
+	
+
+	
+Axis1_MV(
+	Axis:= Axis1, 
+	Execute:= MV1_Execute, 
+	Velocity:= MV1_Velocity, 
+	Acceleration:= MV1_Accelleration, 
+	Deceleration:= MV1_Decceleration, 
+	Jerk:= MV1_Jerk, 
+	Direction:= MV1_Direction, 
+	BufferMode:= MV1_Buffermode, 
+	//Options:= MV_Options, 
+	InVelocity=> MV1_InVelocity, 
+	Busy=> MV1_Busy, 
+	Active=> MV1_Active, 
+	CommandAborted=> MV1_CommandAborted, 
+	Error=> MV1_Error, 
+	ErrorID=> MV1_ErrorID);
 		]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="7768" Count="0" />
-      <LineId Id="7911" Count="0" />
-      <LineId Id="7769" Count="11" />
-      <LineId Id="7881" Count="0" />
-      <LineId Id="7883" Count="11" />
-      <LineId Id="7882" Count="0" />
-      <LineId Id="7781" Count="7" />
-      <LineId Id="7912" Count="0" />
-      <LineId Id="7921" Count="0" />
-      <LineId Id="7927" Count="4" />
-      <LineId Id="7913" Count="0" />
+      <LineId Id="8226" Count="59" />
+      <LineId Id="8225" Count="0" />
+      <LineId Id="7768" Count="20" />
+      <LineId Id="7912" Count="1" />
       <LineId Id="7789" Count="1" />
       <LineId Id="8021" Count="13" />
       <LineId Id="7805" Count="0" />
-      <LineId Id="8003" Count="0" />
-      <LineId Id="8006" Count="0" />
-      <LineId Id="8035" Count="13" />
-      <LineId Id="8004" Count="0" />
-      <LineId Id="7861" Count="0" />
-      <LineId Id="7909" Count="1" />
-      <LineId Id="7908" Count="0" />
-      <LineId Id="7863" Count="1" />
-      <LineId Id="7862" Count="0" />
-      <LineId Id="7907" Count="0" />
-      <LineId Id="7806" Count="2" />
-      <LineId Id="7906" Count="0" />
-      <LineId Id="7809" Count="20" />
-      <LineId Id="7831" Count="0" />
-      <LineId Id="8113" Count="0" />
-      <LineId Id="7832" Count="6" />
-      <LineId Id="8134" Count="0" />
-      <LineId Id="7839" Count="4" />
-      <LineId Id="8114" Count="0" />
-      <LineId Id="7844" Count="6" />
-      <LineId Id="7856" Count="0" />
-      <LineId Id="7858" Count="2" />
-      <LineId Id="7851" Count="1" />
-      <LineId Id="8062" Count="0" />
-      <LineId Id="8141" Count="0" />
-      <LineId Id="8135" Count="0" />
-      <LineId Id="8138" Count="2" />
-      <LineId Id="8136" Count="1" />
-      <LineId Id="8064" Count="15" />
-      <LineId Id="8125" Count="0" />
-      <LineId Id="8121" Count="1" />
-      <LineId Id="8126" Count="0" />
-      <LineId Id="8123" Count="0" />
-      <LineId Id="8080" Count="3" />
-      <LineId Id="8116" Count="0" />
-      <LineId Id="8087" Count="1" />
-      <LineId Id="8090" Count="1" />
-      <LineId Id="8131" Count="2" />
-      <LineId Id="8130" Count="0" />
-      <LineId Id="8094" Count="0" />
-      <LineId Id="8096" Count="0" />
-      <LineId Id="8120" Count="0" />
-      <LineId Id="8127" Count="0" />
-      <LineId Id="8099" Count="4" />
-      <LineId Id="8106" Count="4" />
-      <LineId Id="8063" Count="0" />
-      <LineId Id="7865" Count="1" />
+      <LineId Id="7866" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
