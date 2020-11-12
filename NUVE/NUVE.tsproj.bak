@@ -1606,11 +1606,12 @@ External Setpoint Generation:
 				<Axis Id="2" CreateSymbols="true" AxisType="1">
 					<Name>Axis 2</Name>
 					<AxisPara>
-						<Dynamic Acceleration="4309.9" Deceleration="4309.9" Jerk="12929.7"/>
-						<Velo RefSearch="28.7326666666667" RefSync="28.7326666666667" SlowManual="143.663333333333" FastManual="861.98" Fast="2873.26666666667" Maximum="2873.27"/>
+						<Dynamic Acceleration="193.102849139388" Deceleration="193.102849139388" Jerk="13.317479191567"/>
+						<Velo RefSearch="28.7326666666667" RefSync="28.7326666666667" SlowManual="143.663333333333" FastManual="861.98" Fast="2873.26666666667" Maximum="2800"/>
 						<PositionAreaControl Enable="false"/>
 						<TargetPosControl Enable="false"/>
 						<OtherSettings AllowMotionCmdToSlave="true"/>
+						<ParameterChanged>30</ParameterChanged>
 					</AxisPara>
 					<Encoder Name="Enc" EncType="19">
 						<EncPara ScaleFactorNumerator="94" ScaleFactorDenominator="1048576" MaxCount="#xffffffff"/>
@@ -1672,7 +1673,7 @@ External Setpoint Generation:
 					</Encoder>
 					<Drive Name="Drive" DrvType="16">
 						<DrvPara MaxCount="#xffffffff">
-							<Analog VeloReferenz="3160.59333333333" VeloScale="32" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
+							<Analog VeloReferenz="3000" VeloScale="32" TorqueSetpointScale="10" ScaleFactorActTorque="0.1"/>
 							<TimeComp TaskDelayCycles="1"/>
 						</DrvPara>
 						<Vars VarGrpType="1">
@@ -1910,6 +1911,10 @@ External Setpoint Generation:
 						<Var>
 							<Name>Velocity.Axis2.NcToPlc</Name>
 							<Type GUID="{72F5AAAA-16DF-4ED3-8367-F6C8C3ADAE99}" Namespace="MC">NCTOPLC_AXIS_REF</Type>
+						</Var>
+						<Var>
+							<Name>GVL.ActualTorque</Name>
+							<Type>LREAL</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2">
@@ -3891,8 +3896,13 @@ Bit1: Value smaller than Limit1]]></Comment>
 				<Link VarA="PlcTask Outputs^MAIN.TorqueVAL" VarB="DRV Target torque^Target torque"/>
 			</OwnerB>
 			<OwnerB Name="TINC^NC-Task 1 SAF^Axes^Axis 2">
+				<Link VarA="PlcTask Inputs^GVL.ActualTorque" VarB="Outputs^ToPlc^ActTorque"/>
 				<Link VarA="PlcTask Inputs^MAIN.Axis1.NcToPlc" VarB="Outputs^ToPlc"/>
 				<Link VarA="PlcTask Outputs^MAIN.Axis1.PlcToNc" VarB="Inputs^FromPlc"/>
+			</OwnerB>
+			<OwnerB Name="TINC^NC-Task 1 SAF^Axes^Axis 3">
+				<Link VarA="PlcTask Inputs^Velocity.Axis2.NcToPlc" VarB="Outputs^ToPlc"/>
+				<Link VarA="PlcTask Outputs^Velocity.Axis2.PlcToNc" VarB="Inputs^FromPlc"/>
 			</OwnerB>
 		</OwnerA>
 	</Mappings>

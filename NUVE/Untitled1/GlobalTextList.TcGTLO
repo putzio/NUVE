@@ -90,6 +90,11 @@
               <v n="TextDefault">"Velocity"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
+            <o>
+              <v n="TextID">"392"</v>
+              <v n="TextDefault">"Velocity:"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
           </l>
           <l n="Languages" t="ArrayList" />
           <v n="GuidInit">{bd385369-fa6c-4b0c-acd9-a6110cac88b8}</v>

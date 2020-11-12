@@ -46,7 +46,7 @@ VAR
 	RV_Busy: BOOL;
 	RV_Error: BOOL;
 	RV_ErrorID: UDINT;
-	RActualVelocity: LREAL;
+	A_Velocity: LREAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -64,37 +64,58 @@ END_VAR
 				StepV := 1;
 			END_IF
 		1://Start the torque control, when the StartTorque button will be clicked
-			Power2_Enable := TRUE;
-			Power2_EnablePos := TRUE;
-			Power2_EnableNeg := TRUE;
-			Power2_Override := 100;
-			PowerOnVelocityBtn := FALSE;
+			Axis2_Power(
+	Axis:= Axis2, 
+	Enable:= TRUE, 
+	Enable_Positive:= TRUE, 
+	Enable_Negative:= TRUE, 
+	Override:= 100, 
+	BufferMode:= Power2_BufferMode, 
+	//Options:= , 
+	Status=> Power2_Status, 
+	Busy=> Power2_Busy, 
+	Active=> Power2_Active, 
+	Error=> Power2_Error, 
+	ErrorID=> Power2_ErrorID);
+	RV_Enable:=TRUE;
 			IF (Start2Btn = TRUE) THEN
 				StepV := 2;
+				PowerOnVelocityBtn :=FALSE;
 			END_IF
 		2://Stop the motor (in next step), when the StopVelocity button will be clicked
-			MV2_Execute := TRUE; 
-			
+			Axis2_MoveVelocity(
+	Axis:= Axis2, 
+	Execute:=TRUE, 
+	Velocity:= MV2_Velocity, 
+	Acceleration:= 100, 
+	Deceleration:= 100, 
+	Jerk:= 1000, 
+	Direction:= MV2_Direction, 
+	BufferMode:= MV2_Buffermode, 
+	//Options:= MV_Options, 
+	InVelocity=> MV2_InVelocity, 
+	Busy=> MV2_Busy, 
+	Active=> MV2_Active, 
+	CommandAborted=> MV2_CommandAborted, 
+	Error=> MV2_Error, 
+	ErrorID=> MV2_ErrorID);
 			IF NOT(MV2_Velocity = MVelocity) THEN
 				MV2_Velocity := MVelocity;
 				MV2_Execute := FALSE; 
 			END_IF
-			 
-			MV2_Accelleration := 100; 
-			MV2_Decceleration := 100;
-			MV2_Jerk := 100;
-			Start2Btn := FALSE;
 			IF Stop2Btn = TRUE THEN
 				StepV:= 3;
+				Start2Btn:=FALSE;
 			END_IF
 		3://Stops motor and gets back to the Power On state
-			IF MV2_Velocity = 0 THEN
+			IF Actual_Velocity = 0 THEN
 				MV2_Execute := TRUE;
 				StepV := 1;
+				Stop2Btn := FALSE;
 			END_IF
 			MV2_Execute := FALSE;
 			MV2_Velocity := 0;
-			Stop2Btn := FALSE;
+			
 						
 			
 		10://Error Step
@@ -108,19 +129,7 @@ END_VAR
 			
 		END_CASE
 
-Axis2_Power(
-	Axis:= Axis2, 
-	Enable:= Power2_Enable, 
-	Enable_Positive:= Power2_EnablePos, 
-	Enable_Negative:= Power2_EnableNeg, 
-	Override:= Power2_Override, 
-	BufferMode:= Power2_BufferMode, 
-	//Options:= , 
-	Status=> Power2_Status, 
-	Busy=> Power2_Busy, 
-	Active=> Power2_Active, 
-	Error=> Power2_Error, 
-	ErrorID=> Power2_ErrorID);
+
 	
 	Axis2_ErrorReset(
 	Axis := Axis2,
@@ -132,13 +141,7 @@ Axis2_Power(
 	
 	Axis2_MoveVelocity(
 	Axis:= Axis2, 
-	Execute:= MV2_Execute, 
-	Velocity:= MV2_Velocity, 
-	Acceleration:= MV2_Accelleration, 
-	Deceleration:= MV2_Decceleration, 
-	Jerk:= MV2_Jerk, 
-	Direction:= MV2_Direction, 
-	BufferMode:= MV2_Buffermode, 
+	Execute:=MV2_Execute, 
 	//Options:= MV_Options, 
 	InVelocity=> MV2_InVelocity, 
 	Busy=> MV2_Busy, 
@@ -154,26 +157,55 @@ Axis2_Power(
 	Busy=> RV_Busy, 
 	Error=> RV_Error, 
 	ErrorID=> RV_ErrorID, 
-	ActualVelocity=> RActualVelocity);
+	ActualVelocity=> A_Velocity);
+	Actual_Velocity:=A_Velocity;
+	
+	
+	
+	
+	
+	
+	
 	]]></ST>
     </Implementation>
     <LineIds Name="Velocity">
       <LineId Id="135" Count="0" />
       <LineId Id="78" Count="0" />
       <LineId Id="201" Count="0" />
-      <LineId Id="80" Count="14" />
-      <LineId Id="180" Count="0" />
-      <LineId Id="96" Count="36" />
+      <LineId Id="80" Count="10" />
+      <LineId Id="235" Count="11" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="96" Count="1" />
+      <LineId Id="304" Count="0" />
+      <LineId Id="98" Count="1" />
+      <LineId Id="247" Count="14" />
+      <LineId Id="101" Count="4" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="113" Count="4" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="118" Count="14" />
       <LineId Id="77" Count="0" />
       <LineId Id="76" Count="0" />
-      <LineId Id="214" Count="19" />
+      <LineId Id="226" Count="7" />
       <LineId Id="52" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="61" Count="14" />
-      <LineId Id="60" Count="0" />
+      <LineId Id="303" Count="0" />
+      <LineId Id="288" Count="2" />
+      <LineId Id="296" Count="0" />
+      <LineId Id="298" Count="4" />
+      <LineId Id="287" Count="0" />
       <LineId Id="164" Count="0" />
       <LineId Id="166" Count="6" />
       <LineId Id="165" Count="0" />
+      <LineId Id="284" Count="0" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="283" Count="0" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="281" Count="0" />
+      <LineId Id="280" Count="0" />
+      <LineId Id="279" Count="0" />
+      <LineId Id="278" Count="0" />
       <LineId Id="178" Count="0" />
     </LineIds>
   </POU>
