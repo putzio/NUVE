@@ -5,7 +5,7 @@
     <CycleTime>10000</CycleTime>
     <Priority>20</Priority>
     <PouCall>
-      <Name>MAIN</Name>
+      <Name>Torque</Name>
     </PouCall>
     <PouCall>
       <Name>Velocity</Name>

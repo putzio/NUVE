@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+  <DUT Name="DUT_Step" Id="{1e32b9f3-f7a6-41cd-8746-2847a531f196}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE DUT_Step :
+(
+	Waiting := 0,
+	PowerOn := 1,
+	Start := 2,
+	Stop :=3,
+	Error:=10
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

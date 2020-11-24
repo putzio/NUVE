@@ -27,7 +27,7 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\MAIN.TcPOU">
+    <Compile Include="POUs\Torque.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\Velocity.TcPOU">

@@ -4,6 +4,8 @@
     <Declaration><![CDATA[VAR_GLOBAL
 	Actual_Velocity: LREAL;
 	ActualTorque AT %I*: LREAL;
+	SetVelocity: INT;
+	SetTorque: INT;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

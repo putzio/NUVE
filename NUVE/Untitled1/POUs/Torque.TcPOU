@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
-  <POU Name="MAIN" Id="{1da18359-142c-4771-bf7e-d261e8caea2a}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM MAIN
+  <POU Name="Torque" Id="{1da18359-142c-4771-bf7e-d261e8caea2a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Torque
 VAR
 	res1Error: BOOL;
 	Step: INT;
@@ -39,7 +39,6 @@ VAR
 	MV1_Accelleration: LREAL;
 	MV1_Active: BOOL;
 	TorqueVAL AT %Q*: INT;
-	TVAL  : INT;
 	TorqueLim AT %Q*: UINT;
 	Start1Btn: BOOL;
 	PowerOnTorqueBtn: BOOL;
@@ -58,7 +57,7 @@ END_VAR
 	
 	//Enables user to set the torque of the servomotor
 	IF TorqueEnable  = TRUE THEN
-		TorqueVAL := TVAL;
+		TorqueVAL := SetTorque;
 	END_IF
 	CASE Step OF
 		0://Start of the power (in next step), when the PowerOnTorque button will be clicked
@@ -93,7 +92,7 @@ END_VAR
 	//Acceleration:= MV1_Accelleration, 
 	//Deceleration:= MV1_Decceleration, 
 	//Jerk:= MV1_Jerk, 
-	Direction:= MV1_Direction, 
+	//Direction:= MV1_Direction, 
 	BufferMode:= MV1_Buffermode, 
 	//Options:= MV_Options, 
 	InVelocity=> MV1_InVelocity, 
@@ -104,22 +103,22 @@ END_VAR
 	ErrorID=> MV1_ErrorID);
 			IF Stop1Btn = TRUE THEN
 				Step:= 3;
-				
+				Start1Btn:=FALSE;
 			END_IF
 		3://Stops motor and gets back to the Power On state
-			IF TorqueVAL = 0 THEN
+			IF Actual_Velocity = 0 THEN
 				Step := 1;
+				Stop1Btn:=FALSE;
 			END_IF
 			MV1_Velocity := 0;
 			TorqueEnable := FALSE;
 			TorqueVAL := 0;
-			Stop1Btn := FALSE;
 			
 		10://Error Step
 			Power1_Enable := FALSE;
 			MV1_Execute := FALSE; 
 			MV1_Velocity := 0;
-			TorqueVAL := 0;
+			SetTorque := 0;
 			TorqueEnable := FALSE;
 			ErrorReset1_Execute := TRUE;
 			IF res1Done = TRUE THEN
@@ -143,7 +142,7 @@ Axis1_Error_Reset(
 
 		]]></ST>
     </Implementation>
-    <LineIds Name="MAIN">
+    <LineIds Name="Torque">
       <LineId Id="8226" Count="16" />
       <LineId Id="8287" Count="10" />
       <LineId Id="8286" Count="0" />
@@ -154,8 +153,11 @@ Axis1_Error_Reset(
       <LineId Id="8299" Count="14" />
       <LineId Id="8298" Count="0" />
       <LineId Id="8260" Count="5" />
-      <LineId Id="8267" Count="1" />
-      <LineId Id="8270" Count="15" />
+      <LineId Id="8267" Count="0" />
+      <LineId Id="8360" Count="0" />
+      <LineId Id="8268" Count="0" />
+      <LineId Id="8270" Count="2" />
+      <LineId Id="8274" Count="11" />
       <LineId Id="8225" Count="0" />
       <LineId Id="7768" Count="0" />
       <LineId Id="7780" Count="8" />

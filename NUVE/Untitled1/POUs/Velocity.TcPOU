@@ -23,11 +23,10 @@ VAR
 	res2ErrorID: UDINT;
 	Axis2_MoveVelocity: MC_MoveVelocity;
 	MV2_Execute: BOOL;
-	MV2_Velocity: LREAL;
 	MV2_Accelleration: LREAL;
 	MV2_Decceleration: LREAL;
 	MV2_Jerk: LREAL;
-	MV2_Direction: MC_Direction;
+	MV2_Direction: MC_Direction := 3;
 	MV2_Buffermode: MC_BufferMode;
 	MV2_InVelocity: BOOL;
 	MV2_Busy: BOOL;
@@ -39,7 +38,6 @@ VAR
 	PowerOnVelocityBtn: BOOL;
 	Start2Btn: BOOL;
 	Stop2Btn: BOOL;
-	MVelocity: INT;
 	Read_Velocity: MC_ReadActualVelocity;
 	RV_Enable: BOOL;
 	RV_Valid: BOOL;
@@ -47,6 +45,8 @@ VAR
 	RV_Error: BOOL;
 	RV_ErrorID: UDINT;
 	A_Velocity: LREAL;
+	MV2_Velocity: LREAL;
+	RES_BUTTON: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -56,6 +56,9 @@ END_VAR
 		//In case of an error with torque controlled servo:
 	IF(Power2_error = TRUE OR MV2_Error=TRUE) THEN
 		//StepV := 10;
+		IF	MV2_ErrorID=17744 THEN
+			StepV := 11;
+		END_IF
 	END_IF
 		
 		CASE StepV OF
@@ -99,8 +102,8 @@ END_VAR
 	CommandAborted=> MV2_CommandAborted, 
 	Error=> MV2_Error, 
 	ErrorID=> MV2_ErrorID);
-			IF NOT(MV2_Velocity = MVelocity) THEN
-				MV2_Velocity := MVelocity;
+			IF NOT(MV2_Velocity = SetVelocity) THEN
+				MV2_Velocity := SetVelocity;
 				MV2_Execute := FALSE; 
 			END_IF
 			IF Stop2Btn = TRUE THEN
@@ -126,6 +129,23 @@ END_VAR
 			IF res2Done = TRUE THEN
 				StepV := 0;
 			END_IF
+			
+			11:
+			Stop2Btn:=FALSE;
+			Start2Btn:=FALSE;
+			PowerOnVelocityBtn:=FALSE;
+			IF(RES_BUTTON)THEN
+			MV2_Execute:=FALSE;
+			Axis2_Power(
+				Axis:= Axis2, 
+				Enable:= FALSE);
+			ErrorReset2_Execute:=TRUE;
+			IF(res2Done)THEN
+				ErrorReset2_Execute:=FALSE;
+				StepV :=0;
+			END_IF
+			END_IF
+			
 			
 		END_CASE
 
@@ -158,7 +178,7 @@ END_VAR
 	Error=> RV_Error, 
 	ErrorID=> RV_ErrorID, 
 	ActualVelocity=> A_Velocity);
-	Actual_Velocity:=A_Velocity;
+	Actual_Velocity:=-A_Velocity;
 	
 	
 	
@@ -172,7 +192,9 @@ END_VAR
       <LineId Id="135" Count="0" />
       <LineId Id="78" Count="0" />
       <LineId Id="201" Count="0" />
-      <LineId Id="80" Count="10" />
+      <LineId Id="80" Count="2" />
+      <LineId Id="401" Count="2" />
+      <LineId Id="83" Count="7" />
       <LineId Id="235" Count="11" />
       <LineId Id="234" Count="0" />
       <LineId Id="305" Count="0" />
@@ -185,7 +207,20 @@ END_VAR
       <LineId Id="306" Count="0" />
       <LineId Id="113" Count="4" />
       <LineId Id="307" Count="0" />
-      <LineId Id="118" Count="14" />
+      <LineId Id="118" Count="13" />
+      <LineId Id="404" Count="1" />
+      <LineId Id="421" Count="1" />
+      <LineId Id="420" Count="0" />
+      <LineId Id="418" Count="0" />
+      <LineId Id="406" Count="0" />
+      <LineId Id="424" Count="2" />
+      <LineId Id="407" Count="1" />
+      <LineId Id="410" Count="0" />
+      <LineId Id="417" Count="0" />
+      <LineId Id="411" Count="0" />
+      <LineId Id="415" Count="0" />
+      <LineId Id="412" Count="0" />
+      <LineId Id="132" Count="0" />
       <LineId Id="77" Count="0" />
       <LineId Id="76" Count="0" />
       <LineId Id="226" Count="7" />
