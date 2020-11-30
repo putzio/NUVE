@@ -47,17 +47,22 @@ VAR
 	A_Velocity: LREAL;
 	MV2_Velocity: LREAL;
 	RES_BUTTON: BOOL;
+	errorDiode: BOOL;
+	VelocitySim: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//Axis2 - Velocity controlled servomotor
 //Velocity Controlled Servo
+		VelocitySim:=maxSimulationVelocity*ActualVelocity/2000;
 		
 		//In case of an error with torque controlled servo:
 	IF(Power2_error = TRUE OR MV2_Error=TRUE) THEN
 		//StepV := 10;
+		//Servomotor was stopped with external force
 		IF	MV2_ErrorID=17744 THEN
 			StepV := 11;
+			errorDiode :=TRUE;
 		END_IF
 	END_IF
 		
@@ -142,6 +147,7 @@ END_VAR
 			ErrorReset2_Execute:=TRUE;
 			IF(res2Done)THEN
 				ErrorReset2_Execute:=FALSE;
+				errorDiode := FALSE;
 				StepV :=0;
 			END_IF
 			END_IF
@@ -192,8 +198,12 @@ END_VAR
       <LineId Id="135" Count="0" />
       <LineId Id="78" Count="0" />
       <LineId Id="201" Count="0" />
+      <LineId Id="528" Count="0" />
       <LineId Id="80" Count="2" />
-      <LineId Id="401" Count="2" />
+      <LineId Id="474" Count="0" />
+      <LineId Id="401" Count="1" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="403" Count="0" />
       <LineId Id="83" Count="7" />
       <LineId Id="235" Count="11" />
       <LineId Id="234" Count="0" />
@@ -216,6 +226,7 @@ END_VAR
       <LineId Id="424" Count="2" />
       <LineId Id="407" Count="1" />
       <LineId Id="410" Count="0" />
+      <LineId Id="525" Count="0" />
       <LineId Id="417" Count="0" />
       <LineId Id="411" Count="0" />
       <LineId Id="415" Count="0" />
