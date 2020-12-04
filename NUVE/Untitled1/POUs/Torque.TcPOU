@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
   <POU Name="Torque" Id="{1da18359-142c-4771-bf7e-d261e8caea2a}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Torque
 VAR

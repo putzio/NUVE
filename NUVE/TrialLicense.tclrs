@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <TcLicenseInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2011/11/TcLicenseInfo">
 	<LicenseInfo>
-		<SystemId>{C012741B-4197-5548-2C7A-BE14E16EAEE1}</SystemId>
-		<IssueTime>2020-11-16T10:28:00</IssueTime>
-		<ExpireTime>2020-11-24T00:00:00</ExpireTime>
-		<LicenseKey>117349c76dda70146f359c758fcc007abf919957987e5ac9f86e99a7f0b5f31a651be4caf7ac4b94e1f1e4922da50fe0099f3fcac1050b83e89ce9fdd321bba36a8725aea9072e396ad7680585153c00867af8aed8810775374fcd411c1b77ae428394e3731c97ac936072e7f68c86b26e273a74a04326f3650cdf2359529594a96938b0fbb75e3e09c0dcec12c1bbc6370cbd0fd5a26ce02533ef6ed8a5bd39b7d7c1486959a21f010afe6ce925208e4d0b990619d15f0f016a9bc2a69418bced135ace8fd495f5e9713859167af176f6bba76266db0e64150f797b54d89f1d8deff152e569ad7eb51d88965eac5576bb13236c54506bbc1ed01c0dd1f40081</LicenseKey>
+		<SystemId>{A79C9C08-F9AB-5CD2-7736-3A22DF7380FD}</SystemId>
+		<IssueTime>2020-12-04T11:54:00</IssueTime>
+		<ExpireTime>2020-12-12T00:00:00</ExpireTime>
+		<LicenseKey>03c025f971d6798a4442279c8c41e580934c6051d7de348c65eaa9062cd4e5fd446df6c42a00ced12551028c5380fcf2f72c29ccf1aab9d3e150dd70fcdc8a2db7d6b4912bd21c96f310e676b555c14782bfaad01e556d716f8afec958c06f9faa6eacaad0d195360823ed278022824a1506cfb0a3b82a35c01e06372b55dd138059c6f2e2353a6179767801d29fa6070f16acb32e64a868a718f3f3314c95171589f84df60737ffc30e6d5e6a10582567da245b5fff74d354a8b4bdd64e4642c6199d7e1da784265b490ba5b3ad24f0b0f4c50c2acb0afff41ad3e818833c1f5e6cc5ff4c59321904df91da6fef34c82d9a45f3f123fcbe52fa4f650799a3ed</LicenseKey>
 		<License>
 			<LicenseId>{4C256767-E6E6-4AF5-BD68-9F7ABAD0C200}</LicenseId>
 			<Name>TC3 ADS</Name>
@@ -29,6 +29,11 @@
 			<LicenseId>{520DE751-9DB6-47CB-8240-BD5C466E7E64}</LicenseId>
 			<Name>TC3 NC PTP</Name>
 			<OrderNo>TF5000</OrderNo>
+		</License>
+		<License>
+			<LicenseId>{3EBB9639-5FF3-42B6-8847-35C70DC013C8}</LicenseId>
+			<Name>TC3 TCP/IP</Name>
+			<OrderNo>TF6310</OrderNo>
 		</License>
 	</LicenseInfo>
 </TcLicenseInfo>

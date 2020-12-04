@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <POU Name="FB_ServerApplication" Id="{27aa47e1-a593-472a-a33b-33b9fe6bd70e}" SpecialFunc="None">
+    <Declaration><![CDATA[(* Sample server application. Adapt this code to match your needs. *)
+FUNCTION_BLOCK FB_ServerApplication
+VAR_IN_OUT
+	fbTx 			: FB_FrameFifo;(* TX fifo *)
+	fbRx 			: FB_FrameFifo;(* RX fifo *)
+	fbLog			: FB_LogFifo;(* Log message fifo *)
+END_VAR
+VAR
+	stToClient		: ST_Input_Output; (* Tx user data *)
+	stFromClient	: ST_Input_Output; (* Rx user data *)
+	sLogMessage 	: T_MaxString := '';(* Log/debug/error message *)
+	velInputControl	: LREAL := 0;
+	torqPidControl: FB_BasicPID;
+	resetPID		: BOOL := TRUE;
+	PIDval			: LREAL := 0;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[(*------------------- Fetch rx data and send them back to the client -------------------------------------------------- *)
+REPEAT
+	fbRx.RemoveHead( );(* Fetch data from rx fifo *)
+	IF fbRx.bOk THEN(* Success *)
+		stFromClient := fbRx.stGet;
+		velInputControl := stFromClient.rpmout_speedin;
+		
+		(* Following PID controller is the crise control. This emulates the intelligent machine throttle/brake. *)
+		(* ToDo find some reasonable PID parameters *)
+		torqPidControl(
+			fSetpointValue:= PLCPRJ_CRUISE_CONTROL_SET, 
+			fActualValue:= velInputControl, 
+			bReset:= resetPID, 
+			fCtrlCycleTime:= 0.00025, 
+			fKp:= 120,
+			fTn:= 2, 
+			fTv:= 1, 
+			fTd:= 0.2);
+		IF torqPidControl.fCtrlOutput >= 600 THEN
+			PIDval := 600;
+		ELSIF torqPidControl.fCtrlOutput <= -600 THEN
+			PIDval := -600;
+		ELSE
+			PIDval := torqPidControl.fCtrlOutput;
+		END_IF
+		resetPID := FALSE;
+		(* Set the got and calculated values. First to servos and then to Mevea *)
+		(* Velocity is the angular velocity of the motor. Should be scaled possibly *)
+		SetVelocity :=REAL_TO_INT(velInputControl);
+		(* Max torque is set to +-600. Can be adjusted from mevea *)
+		SetTorque := REAL_TO_INT(PIDval);
+		
+		stToClient.brake :=0;
+		stToClient.rpmin_torqout :=PIDval;
+		stToClient.rpmout_speedin :=1;
+
+		(* Send data back to the client *)
+		fbTx.AddTail( stPut := stToClient );(* Put user data to the tx fifo *)
+		IF NOT fbTx.bOk THEN(* Fifo overflow => Log error *)
+			fbLog.Error( sMessage := 'FB_FrameFifo(sender)', nErrID := PLCPRJ_ERROR_SENDFIFO_OVERFLOW );
+		END_IF
+	END_IF
+UNTIL NOT fbRx.bOk
+END_REPEAT
+
+(*---------------------- Get log/error messages from log fifo ------------------*)
+REPEAT
+	fbLog.Remove( );
+	IF fbLog.bOk THEN
+
+		(* TODO: Implement log message handler *)
+		sLogMessage := fbLog.sGet;
+
+	END_IF
+UNTIL NOT fbLog.bOk
+END_REPEAT
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ServerApplication">
+      <LineId Id="3" Count="3" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="81" Count="7" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="94" Count="1" />
+      <LineId Id="100" Count="1" />
+      <LineId Id="97" Count="1" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="13" Count="20" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

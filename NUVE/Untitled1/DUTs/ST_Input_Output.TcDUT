@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <DUT Name="ST_Input_Output" Id="{c237444f-1053-402f-9957-c3dd1ac882be}">
+    <Declaration><![CDATA[TYPE ST_Input_Output :
+STRUCT
+	(* data struct to be transferred with Mevea. Not ideal, but simple to implement and does the trick in this case *)
+	
+	brake				: LREAL		:= 0;(* 8 byte *)
+	rpmin_torqout	 	: LREAL		:= 0;(* 8 byte *)
+	rpmout_speedin		: LREAL		:= 0;(* 8 byte *)
+
+	(* Total user data size = 24 bytes *)
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
+  <DUT Name="ST_Handshake" Id="{cd9e82bb-6aa4-4e15-98d5-327c6a4d130b}">
+    <Declaration><![CDATA[TYPE ST_Handshake :
+STRUCT
+	(* Handshake with Mevea. First package to sent to Mevea. Mevea sends similar, but in diffrent order after connection. These must match.*)
+	
+	in			: UDINT		:= 3;(* Input parameter amount. 4 byte *)
+	out			: UDINT		:= 3;(* Output parameter amount. 4 byte *)
+	version	 	: UDINT		:= 1;(* Version. 4 byte *)
+
+	(* Total user data size = 12 byte *)
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
