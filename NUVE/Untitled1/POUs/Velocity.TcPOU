@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.4">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.5">
   <POU Name="Velocity" Id="{be16ee95-2daf-451b-8eeb-e164a9c5a781}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Velocity
 VAR
@@ -26,7 +26,7 @@ VAR
 	MV2_Accelleration: LREAL;
 	MV2_Decceleration: LREAL;
 	MV2_Jerk: LREAL;
-	MV2_Direction: MC_Direction := 3;
+	MV2_Direction: MC_Direction := 1;
 	MV2_Buffermode: MC_BufferMode;
 	MV2_InVelocity: BOOL;
 	MV2_Busy: BOOL;
@@ -55,7 +55,12 @@ END_VAR
       <ST><![CDATA[//Axis2 - Velocity controlled servomotor
 //Velocity Controlled Servo
 		VelocitySim:=maxSimulationVelocity*ActualVelocity/2000;
+		IF (SetVelocity<0)THEN
+			MV2_Direction := MC_Positive_Direction;
+		ELSE
+			MV2_Direction := MC_Negative_Direction;
 		
+		END_IF
 		//In case of an error with torque controlled servo:
 	IF(Power2_error = TRUE OR MV2_Error=TRUE) THEN
 		//StepV := 10;
@@ -95,9 +100,9 @@ END_VAR
 	Axis:= Axis2, 
 	Execute:=TRUE, 
 	Velocity:= MV2_Velocity, 
-	Acceleration:= 100, 
-	Deceleration:= 100, 
-	Jerk:= 1000, 
+	Acceleration:= 2000, 
+	Deceleration:= 2000, 
+	Jerk:= 20000, 
 	Direction:= MV2_Direction, 
 	BufferMode:= MV2_Buffermode, 
 	//Options:= MV_Options, 
@@ -108,7 +113,11 @@ END_VAR
 	Error=> MV2_Error, 
 	ErrorID=> MV2_ErrorID);
 			IF NOT(MV2_Velocity = SetVelocity) THEN
-				MV2_Velocity := SetVelocity;
+				IF(SetVelocity>0)THEN
+					MV2_Velocity := SetVelocity;
+				ELSE
+						MV2_Velocity := -SetVelocity;
+				END_IF
 				MV2_Execute := FALSE; 
 			END_IF
 			IF Stop2Btn = TRUE THEN
@@ -116,7 +125,7 @@ END_VAR
 				Start2Btn:=FALSE;
 			END_IF
 		3://Stops motor and gets back to the Power On state
-			IF Actual_Velocity = 0 THEN
+			IF Actual_Velocity <= 0 THEN
 				MV2_Execute := TRUE;
 				StepV := 1;
 				Stop2Btn := FALSE;
@@ -199,6 +208,9 @@ END_VAR
       <LineId Id="78" Count="0" />
       <LineId Id="201" Count="0" />
       <LineId Id="528" Count="0" />
+      <LineId Id="724" Count="0" />
+      <LineId Id="726" Count="2" />
+      <LineId Id="725" Count="0" />
       <LineId Id="80" Count="2" />
       <LineId Id="474" Count="0" />
       <LineId Id="401" Count="1" />
@@ -212,7 +224,9 @@ END_VAR
       <LineId Id="304" Count="0" />
       <LineId Id="98" Count="1" />
       <LineId Id="247" Count="14" />
-      <LineId Id="101" Count="4" />
+      <LineId Id="101" Count="2" />
+      <LineId Id="729" Count="3" />
+      <LineId Id="104" Count="1" />
       <LineId Id="111" Count="1" />
       <LineId Id="306" Count="0" />
       <LineId Id="113" Count="4" />

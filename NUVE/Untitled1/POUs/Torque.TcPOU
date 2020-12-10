@@ -108,7 +108,7 @@ END_VAR
 				Start1Btn:=FALSE;
 			END_IF
 		3://Stops motor and gets back to the Power On state
-			IF Actual_Velocity = 0 THEN
+			IF Actual_Velocity <= 0 THEN
 				Step := 1;
 				Stop1Btn:=FALSE;
 			END_IF

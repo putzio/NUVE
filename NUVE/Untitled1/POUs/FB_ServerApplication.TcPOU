@@ -48,14 +48,16 @@ REPEAT
 		resetPID := FALSE;
 		(* Set the got and calculated values. First to servos and then to Mevea *)
 		(* Velocity is the angular velocity of the motor. Should be scaled possibly *)
-		SetVelocity :=REAL_TO_INT(velInputControl);
+		SetVelocity :=REAL_TO_INT(velInputControl*10);
 		(* Max torque is set to +-600. Can be adjusted from mevea *)
-		SetTorque := REAL_TO_INT(PIDval);
+		//SetTorque := REAL_TO_INT(PIDval)/60;
+		//SetTorque := REAL_TO_INT()/60;
+		
 		
 		stToClient.brake :=0;
-		stToClient.rpmin_torqout :=PIDval;
+		//stToClient.rpmin_torqout :=PIDval;
 		stToClient.rpmout_speedin :=1;
-
+		stToClient.rpmin_torqout := SetTorque;
 		(* Send data back to the client *)
 		fbTx.AddTail( stPut := stToClient );(* Put user data to the tx fifo *)
 		IF NOT fbTx.bOk THEN(* Fifo overflow => Log error *)
@@ -98,6 +100,8 @@ END_REPEAT
       <LineId Id="111" Count="0" />
       <LineId Id="108" Count="0" />
       <LineId Id="110" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="129" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="48" Count="0" />
