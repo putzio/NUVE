@@ -8,7 +8,7 @@ https://www.youtube.com/watch?v=7LhAH19kDyk
 
 
 Our task was to model a small scale system of the NUVE Project.
-## It included two servomotors connected to each other:
+## The project included a Beckhoff PLC and two servomotors connected to each other:
 
 -One was controlled by it's torque, which could simulate the vehicle wheel
 
